@@ -39,7 +39,7 @@ module Devise
           drift = options[:drift] || self.class.allowed_otp_drift_seconds
           fail 'authenticate_totp called with no otp_secret_key set' if totp_secret.nil?
           totp = ROTP::TOTP.new(totp_secret, digits: digits)
-          new_timestamp = totp.verify_with_drift_and_prior(code, drift, totp_timestamp)
+          new_timestamp = totp.verify(code, drift_behind: drift, after: totp_timestamp)
           return false unless new_timestamp
           self.totp_timestamp = new_timestamp
           true
